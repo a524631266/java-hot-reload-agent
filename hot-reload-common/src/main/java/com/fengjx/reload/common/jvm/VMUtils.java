@@ -11,6 +11,7 @@ import lombok.experimental.UtilityClass;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Properties;
 
 /**
  * @author fengjianxin
@@ -32,6 +33,12 @@ public class VMUtils {
         VirtualMachine attach = null;
         try {
             attach = VirtualMachine.attach(pid);
+
+            Properties systemProperties = attach.getSystemProperties();
+            String targetJavaVersion = systemProperties.getProperty("java.specification.version");
+            System.out.println("targetJavaVersion" + targetJavaVersion);
+            String currentJavaVersion = System.getProperty("java.specification.version");
+
             String agentJar = AgentConfig.getAgentJar();
             File jarfile = new File(agentJar);
             if (!jarfile.exists()) {

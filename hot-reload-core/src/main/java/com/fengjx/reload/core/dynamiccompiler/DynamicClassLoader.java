@@ -20,6 +20,9 @@ package com.fengjx.reload.core.dynamiccompiler;
  * #L%
  */
 
+import java.io.IOException;
+import java.net.URL;
+import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -59,5 +62,10 @@ public class DynamicClassLoader extends ClassLoader {
             result.put(entry.getKey(), entry.getValue().getByteCode());
         }
         return result;
+    }
+
+    @Override
+    public Enumeration<URL> getResources(String name) throws IOException {
+        return super.getResources(name);
     }
 }

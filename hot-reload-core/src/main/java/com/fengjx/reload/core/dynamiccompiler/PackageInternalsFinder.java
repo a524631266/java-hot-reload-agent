@@ -20,9 +20,12 @@ package com.fengjx.reload.core.dynamiccompiler;
  * #L%
  */
 
+import com.fengjx.reload.core.adapter.JarURLConnectionAdapter;
+
 import javax.tools.JavaFileObject;
 import java.io.File;
 import java.io.IOException;
+import java.lang.reflect.Method;
 import java.net.JarURLConnection;
 import java.net.URI;
 import java.net.URL;
@@ -45,10 +48,10 @@ public class PackageInternalsFinder {
 
         List<JavaFileObject> result = new ArrayList<JavaFileObject>();
 
-        Enumeration<URL> urlEnumeration = classLoader.getResources(javaPackageName);
+        Enumeration<URL> urlEnumeration = classLoader.getResources(javaPackageName); // com.intellij.notification找不到urlEnumeration
         while (urlEnumeration.hasMoreElements()) { // one URL for each jar on the classpath that has the given package
             URL packageFolderURL = urlEnumeration.nextElement();
-            result.addAll(listUnder(packageName, packageFolderURL));
+            result.addAll(listUnder(packageName, packageFolderURL)); // 目的是把当前包下的【不包含子包的class加载进来】
         }
 
         return result;
@@ -68,11 +71,11 @@ public class PackageInternalsFinder {
         try {
             String jarUri = packageFolderURL.toExternalForm().substring(0, packageFolderURL.toExternalForm().lastIndexOf("!/"));
 
-            JarURLConnection jarConn = (JarURLConnection) packageFolderURL.openConnection();
-            String rootEntryName = jarConn.getEntryName();
+            JarURLConnectionAdapter jarConn = new JarURLConnectionAdapter(packageFolderURL);
+            String rootEntryName = jarConn.getEntryName(); // 是在文件后面的com/github/a524631266/owgeneratorcode/action
             int rootEnd = rootEntryName.length() + 1;
 
-            Enumeration<JarEntry> entryEnum = jarConn.getJarFile().entries();
+            Enumeration<JarEntry> entryEnum = jarConn.getJarFile().entries();// entryEnum new JarFile(new File(jarUri.replace("jar:file:", ""))).entries()
             while (entryEnum.hasMoreElements()) {
                 JarEntry jarEntry = entryEnum.nextElement();
                 String name = jarEntry.getName();

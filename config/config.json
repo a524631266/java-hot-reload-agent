@@ -1,0 +1,10 @@
+{
+  "mode": "server",
+  "watchPaths": [
+    "/Users/navigatezll/github/OwGeneratorCode/src/main/java"
+  ],
+  "pid": 0,
+  "server": {
+    "host": "localhost:6000"
+  }
+}
